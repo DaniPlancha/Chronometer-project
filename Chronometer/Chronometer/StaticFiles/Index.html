@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <title>Chrono-break!</title>
+        <title>Chronometers game</title>
         <link rel="Stylesheet" href="StyleSheet.css">
     </head>
     <body>
@@ -10,12 +10,14 @@
             <ul class="messages-ul">
             </ul>
         </div>
-        <button id="add-timer-button-id" class="add-timer-button" onclick="CreateChronometer()">Add timer</button>
+        <button id="add-timer-button-id" class="add-timer-button" onclick="RequestCreateChronometer()">Add Chronometer</button>
         <div class="mega-wrap">
 
         </div>
         <script src="../lib/microsoft/signalr/dist/browser/signalr.js"></script>
         <script src="EasyTimer.js"></script>
-        <script src="script.js"></script>
+        <script src="Script.js"></script>
+        <script src="Presentation.js"></script>
+        <script src="Persistance.js"></script>
     </body>
 </html>
