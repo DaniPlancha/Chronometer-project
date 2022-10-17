@@ -53,7 +53,7 @@ namespace Chronometer.Controllers
         }
 
         // PUT api/<ChronometerController>/5
-        [HttpPut/*("{id}")*/]
+        [HttpPut]
         public async Task Put([FromBody] ChronometerModel value)
         {
             int id = value.ID;
@@ -68,7 +68,7 @@ namespace Chronometer.Controllers
                     !value.IsRunning
                 )
             );
-            await _chronometerHubContext.Clients.All.SendAsync("Update", value.ID);
+            await _chronometerHubContext.Clients.All.SendAsync("Update", _chronometerServices[id].GetModel());
         }
 
         // DELETE api/<ChronometerController>/5
