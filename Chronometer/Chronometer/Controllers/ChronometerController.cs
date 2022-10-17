@@ -23,25 +23,26 @@ namespace Chronometer.Controllers
 
         // GET: api/<ChronometerController>
         [HttpGet]
-        public IEnumerable<ChronometerModel> Get()
+        public Task<ChronometerModel[]> Get()
         {
-            return _chronometerServices.Values.Select(cs => cs.GetModel());
+            var models = _chronometerServices.Values.Select(cs => cs.GetModel()).ToArray();
+            return Task.FromResult(models);
         }
 
         // GET api/<ChronometerController>/5
         [HttpGet("{id}")]
-        public ChronometerModel Get(int id)
+        public Task<ChronometerModel> Get(int id)
         {
             if (!_chronometerServices.TryGetValue(id, out var result))
             {
                 throw new Exception($"Timer with id {id} does not exists");
             }
-            return result.GetModel();
+            return Task.FromResult(result.GetModel());
         }
 
         // POST api/<ChronometerController>
         [HttpPost]
-        public async Task<ChronometerModel> Post()
+        public async Task Post()
         {
             var model = ChronometerModelFactory.Create();
             if (!_chronometerServices.TryAdd(model.ID, new ChronometerService(model)))
@@ -49,13 +50,13 @@ namespace Chronometer.Controllers
                 throw new Exception($"Timer with {model.ID} already exists");
             }
             await _chronometerHubContext.Clients.All.SendAsync("Add", model);
-            return model;
         }
 
         // PUT api/<ChronometerController>/5
-        [HttpPut("{id}")]
-        public async Task Put(int id, [FromBody] ChronometerModel value)
+        [HttpPut/*("{id}")*/]
+        public async Task Put([FromBody] ChronometerModel value)
         {
+            int id = value.ID;
             if (!_chronometerServices.ContainsKey(id))
             {
                 throw new Exception($"Chronometer with id {id} does not exist");
@@ -64,15 +65,15 @@ namespace Chronometer.Controllers
                 new ChronometerModel(
                     id, 
                     new TimeSpanModel(value.Timer.Minutes, value.Timer.Seconds, value.Timer.Milliseconds), 
-                    value.IsRunning
+                    !value.IsRunning
                 )
             );
-            await _chronometerHubContext.Clients.All.SendAsync("Update", value);
+            await _chronometerHubContext.Clients.All.SendAsync("Update", value.ID);
         }
 
         // DELETE api/<ChronometerController>/5
-        [HttpDelete("{id}")]
-        public async Task Delete(int id)
+        [HttpDelete]
+        public async Task Delete([FromBody]int id)
         {
             if (!_chronometerServices.ContainsKey(id))
             {
