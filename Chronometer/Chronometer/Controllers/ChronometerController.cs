@@ -65,7 +65,7 @@ namespace Chronometer.Controllers
                 new ChronometerModel(
                     id, 
                     new TimeSpanModel(value.Timer.Minutes, value.Timer.Seconds, value.Timer.Milliseconds), 
-                    !value.IsRunning
+                    value.IsRunning
                 )
             );
             await _chronometerHubContext.Clients.All.SendAsync("Update", _chronometerServices[id].GetModel());
